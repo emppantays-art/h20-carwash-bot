@@ -16,6 +16,23 @@ const {
     updateBookingService
 } = require('./database.js');
 
+// ---------- EXPRESS HEALTH CHECK SERVER (for Render) ----------
+const express = require('express');
+const healthApp = express();
+const PORT = process.env.PORT || 3000;
+
+healthApp.get('/', (req, res) => {
+    res.send(`🤖 ${config.carWashName} Bot is running`);
+});
+healthApp.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', env: config.env });
+});
+
+const server = healthApp.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Health check server listening on port ${PORT}`);
+});
+// --------------------------------------------------------------
+
 const CAR_WASH_NAME = config.carWashName;
 const ADMIN_NUMBER = config.adminNumber;
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
@@ -754,9 +771,21 @@ client.on('message', async (message) => {
     await sendWelcomeMenu(userId);
 });
 
+// ---------- QR CODE HANDLER (clickable URL + ASCII fallback) ----------
 client.on('qr', (qr) => {
-    console.log('📱 Scan QR code:');
-    qrcode.generate(qr, { small: true });
+    // Generate a clickable link to a QR code image
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr)}`;
+    console.log('\n📱 *SCAN THIS QR CODE WITH WHATSAPP (LINKED DEVICES)*');
+    console.log('👉 Open this link in your browser to see the QR code:');
+    console.log(qrImageUrl);
+    console.log('(Then scan the image from your phone.)\n');
+    
+    // Optional ASCII fallback (may be garbled on some terminals)
+    try {
+        qrcode.generate(qr, { small: true });
+    } catch (err) {
+        // Ignore – the link is the primary method
+    }
 });
 
 client.on('ready', async () => {
@@ -797,7 +826,7 @@ client.on('disconnected', (reason) => {
 process.on('SIGINT', async () => {
     console.log('\nShutting down...');
     await client.destroy();
-    process.exit(0);
+    server.close(() => process.exit(0));
 });
 
 client.initialize();
