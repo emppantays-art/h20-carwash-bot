@@ -1,0 +1,34 @@
+# ENVIRONMENT FILES - NEVER COMMIT
+.env
+.env.*
+!.env.example
+
+# WHATSAPP SESSION (Contains encryption keys!)
+.wwebjs_auth/
+.wwebjs_auth_*/
+.wwebjs_cache/
+
+# DATABASE FILES (Customer data!)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+/data/
+
+# NODE
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# LOGS
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
