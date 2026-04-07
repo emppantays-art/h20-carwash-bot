@@ -5,19 +5,21 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "postinstall": "npm rebuild sqlite3 --build-from-source",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "better-sqlite3": "^12.8.0",
     "chrono-node": "^2.9.0",
     "dotenv": "^17.4.1",
     "puppeteer": "^24.40.0",
     "qrcode-terminal": "^0.12.0",
-    "sqlite3": "^6.0.1",
     "whatsapp-web.js": "^1.34.6"
   }
 }
