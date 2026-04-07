@@ -1,6 +1,10 @@
 FROM node:20-slim
 
+# Install build tools (for better-sqlite3) and Chrome dependencies
 RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
     wget \
     gnupg \
     ca-certificates \
@@ -9,10 +13,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get update && apt-get install -y google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
 
+# Set Puppeteer to use the installed Chrome
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 WORKDIR /app
 COPY package*.json ./
+
+# Install dependencies (including building better-sqlite3)
 RUN npm install
 
 COPY . .
