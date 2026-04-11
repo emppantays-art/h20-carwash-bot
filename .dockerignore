@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+npm-debug.log*
+package-lock.json
+
+# Environment files
+.env
+.env.*
+
+# WhatsApp auth sessions
+.wwebjs_auth
+.wwebjs_auth_prod
+
+# Logs
+*.log
+logs
+
+# Git
+.git
+.gitignore
+README.md
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# Test files
+test
+coverage
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
