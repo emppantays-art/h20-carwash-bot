@@ -1,26 +1,34 @@
 FROM node:20-slim
 
-# Install build tools (for better-sqlite3) and Chrome dependencies
 RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
-    wget \
-    gnupg \
-    ca-certificates \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-    && apt-get update && apt-get install -y google-chrome-stable \
+    chromium \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-thai-tlwg \
+    fonts-kacst \
+    fonts-freefont-ttf \
+    libxss1 \
+    libxshmfence1 \
+    libgbm1 \
+    libasound2 \
+    --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Set Puppeteer to use the installed Chrome
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
+    ENV=production
 
 WORKDIR /app
+
 COPY package*.json ./
+RUN npm ci --only=production
 
-# Install dependencies (including building better-sqlite3)
-RUN npm install
+COPY index.js ./
+COPY database.js ./
+COPY src/ ./src/
 
-COPY . .
+RUN mkdir -p .wwebjs_auth .wwebjs_auth_prod && chmod -R 777 .wwebjs_auth .wwebjs_auth_prod
+
+EXPOSE 3000
+USER node
 CMD ["node", "index.js"]
